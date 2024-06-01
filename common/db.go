@@ -39,7 +39,7 @@ func code_email_DB() *gorm.DB {
 
 	db, err := gorm.Open(mysql.Open(dsn), &gorm.Config{})
 	if err != nil {
-		log.Panic("error to connect database,%v", err)
+		log.Printf("error to connect database,%v\n", err)
 		panic(err)
 	}
 	db.AutoMigrate(&model.EmailCode{})
@@ -66,7 +66,7 @@ func db_User() *gorm.DB {
 	)
 	db, err := gorm.Open(mysql.Open(dsn), &gorm.Config{})
 	if err != nil {
-		log.Panic("error to connect database,%v", err)
+		log.Printf("error to connect database,%v\n", err)
 	}
 	db.AutoMigrate(&model.User{})
 	return db
@@ -92,7 +92,7 @@ func db_Commens() *gorm.DB {
 	)
 	db, err := gorm.Open(mysql.Open(dsn), &gorm.Config{})
 	if err != nil {
-		log.Panic("error to connect database,%v", err)
+		log.Printf("error to connect database,%v\n", err)
 	}
 	db.AutoMigrate(&model.Record{})
 	db.Exec("ALTER TABLE records ADD CONSTRAINT fk_profiles_users FOREIGN KEY (email) REFERENCES users(email)")
