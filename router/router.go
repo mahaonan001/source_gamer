@@ -18,11 +18,7 @@ func CollectRouter(r *gin.Engine) *gin.Engine {
 			player.POST("/login", controller.Login)
 			player.GET("/info", middle.AuthMiddleware(), controller.Info)
 			player.POST("/cg_info", middle.AuthMiddleware(), controller.Cgif)
-		}
-		admin := api.Group("/admin")
-		{
-			admin.POST("/login", controller.A_login)
-			admin.GET("/info", middle.A_Middleware(), controller.Get_Info)
+			player.POST("/upload")
 		}
 		api.POST("/get_code", controller.Send_Code)
 	}
