@@ -13,6 +13,7 @@
           - [开发前的配置要求](#开发前的配置要求)
           - [**安装步骤**](#安装步骤)
     - [文件目录说明](#文件目录说明)
+    - [路由说明](#路由说明)
     - [使用到的框架](#使用到的框架)
     - [贡献者](#贡献者)
       - [如何参与开源项目](#如何参与开源项目)
@@ -88,7 +89,15 @@ git clone https://github.com/mahaonan001/source_gamer.git
         util.go
 
 ```
+### 路由说明
+```
+http://localhost/api/get_code #获取验证码 需要参数：email
+http://localhost/api/user/register  #用户注册  需要参数：email，name，password，code（验证码）
+http://localhost/api/user/login #用户登录 需要参数：email，password 返回bear token
+http://localhost/api/user/info #获取个人资料 需要参数：bear token
 
+
+```
 
 
 ### 使用到的框架

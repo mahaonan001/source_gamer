@@ -18,7 +18,7 @@ func CollectRouter(r *gin.Engine) *gin.Engine {
 			player.POST("/login", controller.Login)
 			player.GET("/info", middle.AuthMiddleware(), controller.Info)
 			player.POST("/cg_info", middle.AuthMiddleware(), controller.Cgif)
-			player.POST("/upload")
+			// player.POST("/upload")
 		}
 		api.POST("/get_code", controller.Send_Code)
 	}
