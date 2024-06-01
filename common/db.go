@@ -2,12 +2,10 @@ package common
 
 import (
 	"fmt"
-	"net/http"
-	"source_gamer/response"
+	"log"
 
 	"source_gamer/model"
 
-	"github.com/gin-gonic/gin"
 	_ "github.com/go-sql-driver/mysql"
 	easyX "github.com/mahaonan001/easyX"
 	"github.com/spf13/viper"
@@ -41,8 +39,7 @@ func code_email_DB() *gorm.DB {
 
 	db, err := gorm.Open(mysql.Open(dsn), &gorm.Config{})
 	if err != nil {
-		var c *gin.Context
-		response.Response(c, http.StatusServiceUnavailable, 500, gin.H{"code": 500}, "数据库连接出错")
+		log.Panic("error to connect database,%v", err)
 		panic(err)
 	}
 	db.AutoMigrate(&model.EmailCode{})
@@ -67,14 +64,40 @@ func db_User() *gorm.DB {
 		database,
 		charset,
 	)
-	var c *gin.Context
 	db, err := gorm.Open(mysql.Open(dsn), &gorm.Config{})
 	if err != nil {
-		response.Response(c, http.StatusServiceUnavailable, 500, gin.H{"code": 500}, "数据库连接出错")
+		log.Panic("error to connect database,%v", err)
 	}
 	db.AutoMigrate(&model.User{})
 	return db
 }
 func GetDB_User() *gorm.DB {
 	return db_User()
+}
+
+func db_Commens() *gorm.DB {
+	host := viper.GetString("datasource.hostname")
+	port := viper.GetString("datasource.port")
+	database := viper.GetString("datasource.database")
+	username := viper.GetString("datasource.username")
+	password := viper.GetString("datasource.password")
+	charset := viper.GetString("datasource.charset")
+	dsn := fmt.Sprintf("%s:%s@tcp(%s:%s)/%s?charset=%s&parseTime=True&loc=Local",
+		username,
+		password,
+		host,
+		port,
+		database,
+		charset,
+	)
+	db, err := gorm.Open(mysql.Open(dsn), &gorm.Config{})
+	if err != nil {
+		log.Panic("error to connect database,%v", err)
+	}
+	db.AutoMigrate(&model.Record{})
+	db.Exec("ALTER TABLE records ADD CONSTRAINT fk_profiles_users FOREIGN KEY (email) REFERENCES users(email)")
+	return db
+}
+func GetDB_Commens() *gorm.DB {
+	return db_Commens()
 }

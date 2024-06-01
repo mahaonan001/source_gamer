@@ -2,6 +2,7 @@ package main
 
 import (
 	"os"
+	"source_gamer/common"
 	"source_gamer/router"
 
 	"github.com/gin-contrib/cors"
@@ -11,6 +12,7 @@ import (
 
 func main() {
 	InitConfig()
+	common.GetDB_Commens()
 	r := gin.Default()
 	r.Use(cors.New(cors.Config{
 		// 允许的域名或IP地址
