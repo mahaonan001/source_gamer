@@ -1,5 +1,5 @@
-/go.mod
-/go.sum
-/config/config.yml
-/utils/a.xlsx
-/.gitignoregit
+go.mod
+go.sum
+config/config.yml
+utils/a.xlsx
+.gitignore
