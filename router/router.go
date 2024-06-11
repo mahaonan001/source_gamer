@@ -1,6 +1,7 @@
 package router
 
 import (
+	"log"
 	"source_gamer/common"
 	"source_gamer/controller"
 	"source_gamer/middle"
@@ -9,7 +10,10 @@ import (
 )
 
 func CollectRouter(r *gin.Engine) *gin.Engine {
-	common.Init_db()
+	err := common.Init_db()
+	if err != nil {
+		log.Panicln(err)
+	}
 	api := r.Group("/api")
 	{
 		player := api.Group("/user")

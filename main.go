@@ -2,7 +2,6 @@ package main
 
 import (
 	"os"
-	"source_gamer/common"
 	"source_gamer/router"
 
 	"github.com/gin-contrib/cors"
@@ -11,8 +10,7 @@ import (
 )
 
 func main() {
-	InitConfig()
-	common.GetDB_Commens()
+	// common.GetDB_Commens()
 	r := gin.Default()
 	r.Use(cors.New(cors.Config{
 		// 允许的域名或IP地址
@@ -27,7 +25,7 @@ func main() {
 	r = router.CollectRouter(r)
 	r.Run(":" + viper.GetString("server.port"))
 }
-func InitConfig() {
+func init() {
 	workDir, _ := os.Getwd()
 	viper.SetConfigName("config")
 	viper.SetConfigType("yml")

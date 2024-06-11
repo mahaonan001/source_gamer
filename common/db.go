@@ -13,12 +13,14 @@ import (
 	"gorm.io/gorm"
 )
 
-func Init_db() {
-	easyX.CreateDB(viper.GetString("datasource.database"),
+func Init_db() error {
+	err := easyX.CreateDB(viper.GetString("datasource.database"),
 		viper.GetString("datasource.username"),
 		viper.GetString("datasource.password"),
+		viper.GetString("datasource.hostname"),
 		viper.GetInt("datasource.port"),
 	)
+	return err
 }
 
 func code_email_DB() *gorm.DB {

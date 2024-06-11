@@ -4,20 +4,25 @@ import "gorm.io/gorm"
 
 type Record struct {
 	gorm.Model
-	Email            string  `gorm:"type:varchar(40);not null;index"`
-	V_type           string  `gorm:"type:varchar(10);"`
-	Coding           string  `gorm:"type:varchar(10);"`
-	V_link           string  `gorm:"type:varchar(100);"`
-	Page_n           int64   `gorm:"type:bigint;"`
-	User_name        string  `gorm:"type:varchar(20)"`
-	User_id          string  `gorm:"type:varchar(20)"`
-	User_home        string  `gorm:"type:varchar(100)"`
-	Time             string  `gorm:"type:datetime"`
-	Ip               string  `gorm:"type:varchar(10)"`
-	Like_n           int64   `gorm:"type:bigint"`
-	Like_l           string  `gorm:"type:varchar(5)"`
-	Cleaned_comments string  `gorm:"type:longtext;not null"`
-	Main_key         string  `gorm:"type:varchar(20)"`
-	Opteration       string  `gorm:"type:varchar(20)"`
-	Emo_v            float64 `gorm:"type double"`
+	V_type           string `gorm:"type:varchar(10);"`
+	Coding           string `gorm:"type:varchar(10);"`
+	V_link           string `gorm:"type:varchar(100);"`
+	Page_n           int64  `gorm:"type:bigint;"`
+	User_name        string `gorm:"type:varchar(20)"`
+	User_id          string `gorm:"type:varchar(20)"`
+	User_home        string `gorm:"type:varchar(100)"`
+	Time             string `gorm:"type:datetime"`
+	Ip               string `gorm:"type:varchar(10)"`
+	Like_n           int64  `gorm:"type:bigint"`
+	Like_l           string `gorm:"type:varchar(5)"`
+	Cleaned_comments string `gorm:"type:longtext;not null"`
+}
+
+type Score struct {
+}
+
+type Keyword struct {
+}
+
+type Dim struct {
 }
