@@ -23,7 +23,7 @@ func Init_db() error {
 	return err
 }
 
-func code_email_DB() *gorm.DB {
+func getDB() *gorm.DB {
 	host := viper.GetString("datasource.host")
 	port := viper.GetString("datasource.port")
 	database := viper.GetString("datasource.database")
@@ -44,62 +44,10 @@ func code_email_DB() *gorm.DB {
 		log.Printf("error to connect database,%v\n", err)
 		panic(err)
 	}
-	db.AutoMigrate(&model.EmailCode{})
+	db.AutoMigrate(&model.Chat{}, &model.EmailCode{}, &model.User{}, &model.Record{}, &model.Score{}, &model.Dim{}, &model.Keyword{})
 	return db
 }
 
-func GetDB_Email() *gorm.DB {
-	return code_email_DB()
-}
-func db_User() *gorm.DB {
-	host := viper.GetString("datasource.hostname")
-	port := viper.GetString("datasource.port")
-	database := viper.GetString("datasource.database")
-	username := viper.GetString("datasource.username")
-	password := viper.GetString("datasource.password")
-	charset := viper.GetString("datasource.charset")
-	dsn := fmt.Sprintf("%s:%s@tcp(%s:%s)/%s?charset=%s&parseTime=True&loc=Local",
-		username,
-		password,
-		host,
-		port,
-		database,
-		charset,
-	)
-	db, err := gorm.Open(mysql.Open(dsn), &gorm.Config{})
-	if err != nil {
-		log.Printf("error to connect database,%v\n", err)
-	}
-	db.AutoMigrate(&model.User{})
-	return db
-}
-func GetDB_User() *gorm.DB {
-	return db_User()
-}
-
-func db_Commens() *gorm.DB {
-	host := viper.GetString("datasource.hostname")
-	port := viper.GetString("datasource.port")
-	database := viper.GetString("datasource.database")
-	username := viper.GetString("datasource.username")
-	password := viper.GetString("datasource.password")
-	charset := viper.GetString("datasource.charset")
-	dsn := fmt.Sprintf("%s:%s@tcp(%s:%s)/%s?charset=%s&parseTime=True&loc=Local",
-		username,
-		password,
-		host,
-		port,
-		database,
-		charset,
-	)
-	db, err := gorm.Open(mysql.Open(dsn), &gorm.Config{})
-	if err != nil {
-		log.Printf("error to connect database,%v\n", err)
-	}
-	db.AutoMigrate(&model.Record{})
-	db.Exec("ALTER TABLE records ADD CONSTRAINT fk_profiles_users FOREIGN KEY (email) REFERENCES users(email)")
-	return db
-}
-func GetDB_Commens() *gorm.DB {
-	return db_Commens()
+func GetDB() *gorm.DB {
+	return getDB()
 }

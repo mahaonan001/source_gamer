@@ -17,7 +17,7 @@ import (
 
 func Register(c *gin.Context) {
 	//获取参数
-	db_User := common.GetDB_User()
+	db_User := common.GetDB()
 	Email := c.PostForm("email")
 	Name := c.PostForm("name")
 	PassWord := c.PostForm("password")
@@ -40,7 +40,7 @@ func Register(c *gin.Context) {
 			response.Response(c, http.StatusOK, 403, nil, "该邮箱已注册")
 			return
 		}
-		DB_code := common.GetDB_Email()
+		DB_code := common.GetDB()
 		var Code_email model.EmailCode
 		DB_code.Where("email=?", Email).Order("id desc").Limit(1).Find(&Code_email)
 		if Code_Email == Code_email.Code_email { //存在符合条件的验证码

@@ -20,7 +20,7 @@ func Cgif(c *gin.Context) {
 		User = getU.(model.User)
 	}
 	name := c.PostForm("name")
-	db := common.GetDB_User()
+	db := common.GetDB()
 	User.Name = name
 	db.Save(User)
 	if db.Error != nil {

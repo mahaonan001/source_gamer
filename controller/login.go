@@ -22,7 +22,7 @@ func Login(c *gin.Context) {
 		return
 	}
 
-	db := common.GetDB_User()
+	db := common.GetDB()
 
 	log.Println("email:", Email, "PassWord:", PassWord, " is logining")
 	User := isEmailExited(db, Email)
@@ -47,7 +47,7 @@ func Login(c *gin.Context) {
 		log.Printf("token generate error : %v", err)
 		return
 	}
-	DB_code := common.GetDB_Email()
+	DB_code := common.GetDB()
 	DB_code.Where("email=?", User.Email).Delete(&model.EmailCode{})
 	response.SuccessRe(c, "登陆成功", gin.H{"token": token})
 	User.ErrorTimes = 0

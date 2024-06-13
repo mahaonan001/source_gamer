@@ -1,7 +1,9 @@
 package main
 
 import (
+	"log"
 	"os"
+	"source_gamer/common"
 	"source_gamer/router"
 
 	"github.com/gin-contrib/cors"
@@ -34,4 +36,9 @@ func init() {
 	if err != nil {
 		panic(err)
 	}
+	err = common.Init_db()
+	if err != nil {
+		log.Panicln(err)
+	}
+	common.GetDB()
 }

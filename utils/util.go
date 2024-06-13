@@ -4,6 +4,7 @@ import (
 	"log"
 	"math/rand"
 	"regexp"
+	"source_gamer/common"
 	"source_gamer/model"
 	"strconv"
 	"time"
@@ -21,7 +22,7 @@ func RandomString(l int, Inner string) string {
 	return string(result)
 }
 
-func Test_xslx(path, email string) {
+func Test_xslx(path string) {
 	var commens []model.Record
 	f, err := excelize.OpenFile("a.xlsx")
 
@@ -49,7 +50,6 @@ func Test_xslx(path, email string) {
 			return
 		}
 		commen := model.Record{
-			Email:            email,
 			V_type:           row[0],
 			Coding:           row[1],
 			V_link:           row[2],
@@ -65,4 +65,7 @@ func Test_xslx(path, email string) {
 		}
 		commens = append(commens, commen)
 	}
+	db := common.GetDB()
+	db.Create(&commens)
+	log.Panicln("aa")
 }
