@@ -18,6 +18,8 @@ func CollectRouter(r *gin.Engine) *gin.Engine {
 			player.GET("/info", middle.AuthMiddleware(), controller.Info)
 			player.POST("/cg_info", middle.AuthMiddleware(), controller.Cgif)
 			// player.POST("/upload")
+			player.POST("/g_record", middle.AuthMiddleware(), controller.Get_records)
+			player.GET("/location", controller.Locations)
 		}
 		api.POST("/get_code", controller.Send_Code)
 	}

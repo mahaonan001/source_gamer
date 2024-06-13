@@ -1,6 +1,7 @@
 package utils
 
 import (
+	"fmt"
 	"log"
 	"math/rand"
 	"regexp"
@@ -24,6 +25,7 @@ func RandomString(l int, Inner string) string {
 
 func Test_xslx(path string) {
 	var commens []model.Record
+	db := common.GetDB()
 	f, err := excelize.OpenFile("a.xlsx")
 
 	if err != nil {
@@ -51,7 +53,7 @@ func Test_xslx(path string) {
 		}
 		commen := model.Record{
 			V_type:           row[0],
-			Coding:           row[1],
+			ID:               row[1],
 			V_link:           row[2],
 			Page_n:           pg_n,
 			User_name:        row[4],
@@ -65,7 +67,46 @@ func Test_xslx(path string) {
 		}
 		commens = append(commens, commen)
 	}
-	db := common.GetDB()
+
 	db.Create(&commens)
-	log.Panicln("aa")
+	if db.Error != nil {
+		return
+	}
+}
+
+func Analysis_record(path string) {
+	// var commens []model.Record
+	f, err := excelize.OpenFile("b.xlsx")
+	db := common.GetDB()
+	if err != nil {
+		log.Println(err)
+		return
+	}
+	rows, err := f.GetRows("Sheet1")
+	if err != nil {
+		return
+	}
+
+	for _, row := range rows[1:] {
+
+		if len(row) < 18 {
+			continue
+		}
+		var dim model.Dim
+		// var score model.Score
+		result := db.Where("dim_=?", row[15]).Find(&dim)
+		if result.Error != nil {
+			fmt.Println("Error occurred during querying:", result.Error)
+		} else if result.RowsAffected == 0 {
+			dim.Dim_ = row[15]
+			db.Create(&dim)
+		}
+		break
+
+	}
+	// db := common.GetDB()
+	// db.Create(&commens)
+	// if db.Error != nil {
+	// 	return
+	// }
 }

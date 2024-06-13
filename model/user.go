@@ -8,7 +8,7 @@ import (
 
 type User struct {
 	gorm.Model
-	Email      string `gorm:"type:varchar(20);not null;unique"`
+	Email      string `gorm:"type:varchar(55);not null;unique"`
 	Name       string `gorm:"type:varchar(20);not null"`
 	PassWord   string `gorm:"type:varchar(255);not null"`
 	ErrorTimes int8   `gorm:"type:int8;not null"`
@@ -16,7 +16,7 @@ type User struct {
 
 type EmailCode struct {
 	ID         uint64
-	Email      string    `gorm:"type:varchar(30);not null;primary Key"`
+	Email      string    `gorm:"type:varchar(55);not null;primary Key"`
 	Code_email string    `gorm:"type:varchar(6);not null;unique"`
 	InfTime    time.Time `gorm:"type:datetime;not null"`
 }
