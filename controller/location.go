@@ -8,14 +8,18 @@ import (
 )
 
 type Location struct {
-	zone string
-	po   float32
-	ne   float32
+	Ip  string  `gorm:"column:ip"`
+	Pos float32 `gorm:"column:pos"`
+	Neg float32 `gorm:"column:neg"`
+}
+
+func (l Location) TableName() string {
+	return "locations"
 }
 
 func Locations(c *gin.Context) {
-	var locations Location
-	db := common.GetDB()
-	db.Order("pos").Find(&locations)
+	var locations []Location
+	db, _ := common.GetDB()
+	db.Order("pos desc").Find(&locations)
 	response.SuccessRe(c, "", gin.H{"locations": locations})
 }

@@ -16,18 +16,18 @@ type Record struct {
 }
 
 type Score struct {
-	RecordId        int    `gorm:"type:index;not null"`
+	RecordId        string `gorm:"type:index;not null"`
 	Record          Record `gorm:"foreignKey:RecordId"`
 	Analysis        string `gorm:"type:longtext;not null"`
 	Extracted_texts string `gorm:"type:longtext;not null"`
 	Dim_id          int    `gorm:"type:index;not null"`
 	Dim             Dim    `gorm:"foreignKey:Dim_id"`
-	Option_word     string `gorm:"type:varchar(20);not null"`
+	Option_word     string `gorm:"type:varchar(55);not null"`
 	Score_          bool   `gorm:"type:int;not null"`
 }
 
 type Keyword struct {
-	RecordId    int     `gorm:"type:index;not null"`
+	RecordId    string  `gorm:"type:index;not null"`
 	Record      Record  `gorm:"foreignKey:RecordId"`
 	T_room      float64 `gorm:"type:double;"`
 	S_room      int     `gorm:"type:int"`

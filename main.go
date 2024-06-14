@@ -5,6 +5,7 @@ import (
 	"os"
 	"source_gamer/common"
 	"source_gamer/router"
+	"source_gamer/utils"
 
 	"github.com/gin-contrib/cors"
 	"github.com/gin-gonic/gin"
@@ -13,7 +14,9 @@ import (
 
 func main() {
 	// common.GetDB_Commens()
+	gin.SetMode(gin.ReleaseMode)
 	r := gin.Default()
+
 	r.Use(cors.New(cors.Config{
 		// 允许的域名或IP地址
 		AllowOrigins: []string{"*"},
@@ -36,11 +39,28 @@ func init() {
 	if err != nil {
 		panic(err)
 	}
-	err = common.Init_db()
+
+	db, err := common.GetDB()
 	if err != nil {
-		log.Panicln(err)
+		err = common.Init_db()
+		if err != nil {
+			log.Panicln(err)
+		}
+		sqlLocatuon, err := os.ReadFile(viper.GetString("SQL.locations"))
+		if err != nil {
+			panic("failed to read sql file")
+		}
+		sqlShow, err := os.ReadFile(viper.GetString("SQL.shows"))
+		if err != nil {
+			panic("failed to read sql file")
+		}
+		db.Exec(string(sqlLocatuon))
+		db.Exec(string(sqlShow))
+		utils.Record(viper.GetString("WorkDir.record"))
+
+		utils.Analysis_record(viper.GetString("WorkDir.score"))
+
+		utils.Keyword(viper.GetString("WorkDir.keyword"))
 	}
-	common.GetDB()
-	// utils.Test_xslx("")
-	// utils.Analysis_record("")
+
 }

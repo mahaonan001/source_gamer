@@ -22,11 +22,30 @@ func RandomString(l int, Inner string) string {
 	}
 	return string(result)
 }
-
-func Test_xslx(path string) {
+func row_string(k int, row []string) string {
+	if len(row) < k+1 {
+		return ""
+	}
+	return row[k]
+}
+func String2int(str string) int {
+	n, err := strconv.Atoi(str)
+	if err != nil {
+		return -1
+	}
+	return n
+}
+func String2Double(str string) float64 {
+	f, err := strconv.ParseFloat(str, 64)
+	if err != nil {
+		return -1
+	}
+	return f
+}
+func Record(path string) {
 	var commens []model.Record
-	db := common.GetDB()
-	f, err := excelize.OpenFile("a.xlsx")
+	db, _ := common.GetDB()
+	f, err := excelize.OpenFile(path)
 
 	if err != nil {
 		log.Println(err)
@@ -70,14 +89,14 @@ func Test_xslx(path string) {
 
 	db.Create(&commens)
 	if db.Error != nil {
+		log.Println(err)
 		return
 	}
 }
 
 func Analysis_record(path string) {
-	// var commens []model.Record
-	f, err := excelize.OpenFile("b.xlsx")
-	db := common.GetDB()
+	f, err := excelize.OpenFile(path)
+	db, _ := common.GetDB()
 	if err != nil {
 		log.Println(err)
 		return
@@ -93,7 +112,6 @@ func Analysis_record(path string) {
 			continue
 		}
 		var dim model.Dim
-		// var score model.Score
 		result := db.Where("dim_=?", row[15]).Find(&dim)
 		if result.Error != nil {
 			fmt.Println("Error occurred during querying:", result.Error)
@@ -101,12 +119,48 @@ func Analysis_record(path string) {
 			dim.Dim_ = row[15]
 			db.Create(&dim)
 		}
-		break
 
+		score := model.Score{
+			RecordId:        row[1],
+			Analysis:        row[13],
+			Extracted_texts: row[14],
+			Dim_id:          dim.Id,
+			Option_word:     row[16],
+			Score_:          row[17] == "正向",
+		}
+		db.Create(&score)
+		if db.Error != nil {
+			log.Println(db.Error)
+			return
+		}
 	}
-	// db := common.GetDB()
-	// db.Create(&commens)
-	// if db.Error != nil {
-	// 	return
-	// }
+}
+
+func Keyword(path string) {
+	f, err := excelize.OpenFile(path)
+	db, _ := common.GetDB()
+	if err != nil {
+		log.Println(err)
+		return
+	}
+	rows, err := f.GetRows("Sheet1")
+	if err != nil {
+		return
+	}
+	for _, row := range rows[1:] {
+		keyword := model.Keyword{
+			RecordId:    row[0],
+			T_room:      String2Double(row[10]),
+			S_room:      String2int(row_string(11, row)),
+			BurnningT:   row_string(12, row),
+			Device_logo: row_string(13, row),
+			Hot_T:       row_string(14, row),
+			Time_cyc:    row_string(15, row),
+			Money_cyc:   String2Double(row_string(16, row)),
+			Gas_cyc:     String2Double(row_string(17, row)),
+			Ele_cyc:     String2int(row_string(18, row)),
+			Boal_cyc:    String2int(row_string(19, row)),
+		}
+		db.Create(&keyword)
+	}
 }

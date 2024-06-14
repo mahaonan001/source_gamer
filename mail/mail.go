@@ -26,7 +26,7 @@ func Code_email(c *gin.Context) {
 	SendMail(User_email, c)
 }
 func SendMail(Toemail string, c *gin.Context) {
-	DB := common.GetDB()
+	DB, _ := common.GetDB()
 	smtpHost := "smtp.qq.com"                                 // SMTP服务器地址
 	smtpPort := "587"                                         // SMTP服务器端口
 	smtpUser := viper.GetString("emailCode.email")            // SMTP用户名

@@ -23,7 +23,7 @@ func Init_db() error {
 	return err
 }
 
-func getDB() *gorm.DB {
+func getDB() (*gorm.DB, error) {
 	host := viper.GetString("datasource.host")
 	port := viper.GetString("datasource.port")
 	database := viper.GetString("datasource.database")
@@ -42,12 +42,12 @@ func getDB() *gorm.DB {
 	db, err := gorm.Open(mysql.Open(dsn), &gorm.Config{})
 	if err != nil {
 		log.Printf("error to connect database,%v\n", err)
-		panic(err)
+		return nil, err
 	}
 	db.AutoMigrate(&model.Chat{}, &model.EmailCode{}, &model.User{}, &model.Record{}, &model.Score{}, &model.Dim{}, &model.Keyword{})
-	return db
+	return db, nil
 }
 
-func GetDB() *gorm.DB {
+func GetDB() (*gorm.DB, error) {
 	return getDB()
 }
