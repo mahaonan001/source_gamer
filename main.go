@@ -6,7 +6,6 @@ import (
 	"source_gamer/common"
 	"source_gamer/router"
 	"source_gamer/utils"
-	"time"
 
 	"github.com/gin-contrib/cors"
 	"github.com/gin-gonic/gin"
@@ -16,12 +15,12 @@ import (
 func main() {
 	// gin.SetMode(gin.ReleaseMode)
 	r := gin.Default()
-	tick := time.NewTicker(time.Duration(viper.GetInt("TimeCyc")) * time.Second)
-	go func() {
-		for range tick.C {
-			utils.Timely()
-		}
-	}()
+	// tick := time.NewTicker(time.Duration(viper.GetInt("TimeCyc")) * time.Second)
+	// go func() {
+	// 	for range tick.C {
+	// 		utils.Timely()
+	// 	}
+	// }()
 	r.Use(cors.New(cors.Config{
 		// 允许的域名或IP地址
 		AllowOrigins: []string{"*"},

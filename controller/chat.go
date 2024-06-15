@@ -1,0 +1,43 @@
+package controller
+
+import (
+	"log"
+	"source_gamer/common"
+	"source_gamer/model"
+	"source_gamer/response"
+	"source_gamer/utils"
+
+	"github.com/gin-gonic/gin"
+)
+
+func Chats(c *gin.Context) {
+	User, t := c.Get("User")
+	if !t {
+		response.FalseRe(c, "身份信息有误，请重新登陆", nil)
+	}
+	db, err := common.GetDB()
+	if err != nil {
+		response.FalseRe(c, "身份信息有误，请重新登陆", nil)
+	}
+	comment := c.PostForm("comment")
+	var randId string
+	for {
+		randId = utils.RandomString(9, "1234567890qwertyuiopasdfghjklzxcvbnm")
+		result := db.Select("id=?", randId)
+		if result.RowsAffected == 0 {
+			break
+		}
+	}
+
+	record := model.Record{
+		ID:               randId,
+		Cleaned_comments: comment,
+	}
+	db.Create(&record)
+	log.Println(User)
+	chat := model.Chat{
+		Email_:   User.(model.User).Email,
+		RecordId: randId,
+	}
+	db.Create(&chat)
+}

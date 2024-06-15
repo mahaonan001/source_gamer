@@ -49,6 +49,6 @@ type Dim struct {
 type Chat struct {
 	Email_   string `gorm:"type:index;not null"`
 	User     User   `gorm:"foreignKey:Email_;references:Email"`
-	RecordId int    `gorm:"index"`
+	RecordId string `gorm:"index"`
 	Record   Record `gorm:"foreignKey:RecordId;references:ID"`
 }
