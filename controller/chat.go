@@ -17,7 +17,7 @@ func Chats(c *gin.Context) {
 	}
 	db, err := common.GetDB()
 	if err != nil {
-		response.FalseRe(c, "身份信息有误，请重新登陆", nil)
+		response.FalseRe(c, "数据库连接失败", nil)
 	}
 	comment := c.PostForm("comment")
 	var randId string
@@ -40,4 +40,24 @@ func Chats(c *gin.Context) {
 		RecordId: randId,
 	}
 	db.Create(&chat)
+}
+
+func ChatsRecord(c *gin.Context) {
+	User, t := c.Get("User")
+	if !t {
+		response.FalseRe(c, "身份信息有误，请重新登陆", nil)
+	}
+	db, err := common.GetDB()
+	if err != nil {
+		response.FalseRe(c, "数据库连接失败", nil)
+	}
+	var chats []model.Chat
+	db.Where("email_=?", User.(model.User).Email).Find(&chats)
+	var records []string
+	for _, chat := range chats {
+		var record model.Record
+		db.Where("id=?", chat.User.ID).Find(&record)
+		records = append(records, record.Cleaned_comments)
+	}
+	response.SuccessRe(c, "历史记录", gin.H{"历史": records})
 }
