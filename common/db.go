@@ -44,7 +44,10 @@ func getDB() (*gorm.DB, error) {
 		log.Printf("error to connect database,%v\n", err)
 		return nil, err
 	}
-	db.AutoMigrate(&model.Chat{}, &model.EmailCode{}, &model.User{}, &model.Record{}, &model.Score{}, &model.Dim{}, &model.Keyword{})
+	err = db.AutoMigrate(&model.EmailCode{}, &model.User{}, &model.Record{}, &model.Chat{}, &model.Score{}, &model.Dim{}, &model.Keyword{})
+	if err != nil {
+		return nil, err
+	}
 	return db, nil
 }
 

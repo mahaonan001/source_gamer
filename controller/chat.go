@@ -36,7 +36,7 @@ func Chats(c *gin.Context) {
 	db.Create(&record)
 	log.Println(User)
 	chat := model.Chat{
-		Email_:   User.(model.User).Email,
+		EmailId:  User.(model.User).Email,
 		RecordId: randId,
 	}
 	db.Create(&chat)

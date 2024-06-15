@@ -15,6 +15,10 @@ type Record struct {
 	Cleaned_comments string `gorm:"type:longtext;not null"`
 }
 
+func (r *Record) TableName() string {
+	return "records_t"
+}
+
 type Score struct {
 	RecordId        string `gorm:"type:index;not null"`
 	Record          Record `gorm:"foreignKey:RecordId"`
@@ -26,8 +30,12 @@ type Score struct {
 	Score_          bool   `gorm:"type:int;not null"`
 }
 
+func (s *Score) TableName() string {
+	return "scores_t"
+}
+
 type Keyword struct {
-	RecordId    string  `gorm:"type:index;not null"`
+	RecordId    string  `gorm:"type:index;not null;1"`
 	Record      Record  `gorm:"foreignKey:RecordId"`
 	T_room      float64 `gorm:"type:double;"`
 	S_room      int     `gorm:"type:int"`
@@ -41,14 +49,26 @@ type Keyword struct {
 	Boal_cyc    int     `gorm:"type:int"`
 }
 
+func (k *Keyword) TableName() string {
+	return "keywords_t"
+}
+
 type Dim struct {
 	Id   int    `gorm:"type:int;autoincrement;primaryKey;not null"`
 	Dim_ string `gorm:"type:varchar(10);not null;unique"`
 }
 
+func (d *Dim) TableName() string {
+	return "dims_t"
+}
+
 type Chat struct {
-	Email_   string `gorm:"type:index;not null"`
-	User     User   `gorm:"foreignKey:Email_;references:Email"`
+	EmailId  string `gorm:"type:index;not null"`
+	User     User   `gorm:"foreignKey:EmailId;references:Email"`
 	RecordId string `gorm:"index"`
 	Record   Record `gorm:"foreignKey:RecordId;references:ID"`
+}
+
+func (c *Chat) TableName() string {
+	return "chats_t"
 }

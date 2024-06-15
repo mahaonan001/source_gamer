@@ -1,12 +1,16 @@
 package main
 
 import (
+	"fmt"
 	"log"
 	"os"
 	"source_gamer/common"
+	"source_gamer/model"
 	"source_gamer/router"
 	"source_gamer/utils"
 	"time"
+
+	"gopkg.in/yaml.v3"
 
 	"github.com/gin-contrib/cors"
 	"github.com/gin-gonic/gin"
@@ -18,10 +22,11 @@ func main() {
 	r := gin.Default()
 	open := viper.GetBool("TimeSwitch")
 	if open {
+		db, _ := common.GetDB()
 		tick := time.NewTicker(time.Duration(viper.GetInt("TimeCyc")) * time.Second)
 		go func() {
 			for range tick.C {
-				utils.Timely()
+				utils.Timely(db)
 			}
 		}()
 	}
@@ -36,7 +41,10 @@ func main() {
 		AllowCredentials: true,
 	}))
 	r = router.CollectRouter(r)
-	r.Run(":" + viper.GetString("server.port"))
+	err := r.Run(":" + viper.GetString("server.port"))
+	if err != nil {
+		return
+	}
 }
 func init() {
 	workDir, _ := os.Getwd()
@@ -47,14 +55,26 @@ func init() {
 	if err != nil {
 		panic(err)
 	}
-
-	db, err := common.GetDB()
-	if err != nil {
-		err = common.Init_db()
-		if err != nil {
-			log.Panicln(err)
+	viper2 := viper.New()
+	viper2.SetConfigName("first")
+	viper2.SetConfigType("yml")
+	viper2.AddConfigPath(workDir + "/config")
+	err2 := viper2.ReadInConfig()
+	if err2 != nil {
+		panic(err2)
+	}
+	var config model.Config
+	err2 = viper2.UnmarshalExact(&config)
+	if err2 != nil {
+		panic(fmt.Errorf("unable to decode into struct, %v", err2))
+	}
+	if config.FirstTime {
+		errInit := common.Init_db()
+		if errInit != nil {
+			log.Panicln("err", errInit)
+			return
 		}
-		sqlLocatuon, err := os.ReadFile(viper.GetString("SQL.locations"))
+		sqlLocation, err := os.ReadFile(viper.GetString("SQL.locations"))
 		if err != nil {
 			panic("failed to read sql file")
 		}
@@ -62,9 +82,22 @@ func init() {
 		if err != nil {
 			panic("failed to read sql file")
 		}
-		db.Exec(string(sqlLocatuon))
-		db.Exec(string(sqlShow))
-		utils.Timely()
+		dbNew, errDbNew := common.GetDB()
+		if errDbNew != nil {
+			log.Panicln(errDbNew)
+		}
+		dbNew.Exec(string(sqlLocation))
+		dbNew.Exec(string(sqlShow))
+		config.FirstTime = false
+		marshalled, errMarshal := yaml.Marshal(&config)
+		if errMarshal != nil {
+			panic(fmt.Errorf("error marshalling config, %s", errMarshal))
+		}
+		errMarshal = os.WriteFile("./config/first.yml", marshalled, 0644)
+		if errMarshal != nil {
+			panic(fmt.Errorf("error writing yaml file, %s", errMarshal))
+		}
+		fmt.Println("Configuration has been updated.")
 	}
 
 }

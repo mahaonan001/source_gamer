@@ -1,16 +1,17 @@
 package utils
 
 import (
+	"errors"
 	"fmt"
 	"log"
 	"math/rand"
 	"regexp"
-	"source_gamer/common"
 	"source_gamer/model"
 	"strconv"
 	"time"
 
 	"github.com/xuri/excelize/v2"
+	"gorm.io/gorm"
 )
 
 func RandomString(l int, Inner string) string {
@@ -42,9 +43,7 @@ func String2Double(str string) float64 {
 	}
 	return f
 }
-func Record(path string) {
-	var commens []model.Record
-	db, _ := common.GetDB()
+func Record(path string, db *gorm.DB) {
 	f, err := excelize.OpenFile(path)
 
 	if err != nil {
@@ -84,19 +83,17 @@ func Record(path string) {
 			Like_l:           row[10],
 			Cleaned_comments: row[11],
 		}
-		commens = append(commens, commen)
-	}
+		var existingRecord model.Record
+		result := db.First(&existingRecord, "id = ?", commen.ID)
+		if errors.Is(result.Error, gorm.ErrRecordNotFound) {
+			db.Create(&commen)
+		}
 
-	db.Create(&commens)
-	if db.Error != nil {
-		log.Println(err)
-		return
 	}
 }
 
-func Analysis_record(path string) {
+func Analysis_record(path string, db *gorm.DB) {
 	f, err := excelize.OpenFile(path)
-	db, _ := common.GetDB()
 	if err != nil {
 		log.Println(err)
 		return
@@ -128,17 +125,16 @@ func Analysis_record(path string) {
 			Option_word:     row[16],
 			Score_:          row[17] == "正向",
 		}
-		db.Create(&score)
-		if db.Error != nil {
-			log.Println(db.Error)
-			return
+		var existingScore model.Score
+		results := db.First(&existingScore, "record_id=?", score.RecordId)
+		if errors.Is(results.Error, gorm.ErrRecordNotFound) {
+			db.Create(&score)
 		}
 	}
 }
 
-func Keyword(path string) {
+func Keyword(path string, db *gorm.DB) {
 	f, err := excelize.OpenFile(path)
-	db, _ := common.GetDB()
 	if err != nil {
 		log.Println(err)
 		return
@@ -161,6 +157,11 @@ func Keyword(path string) {
 			Ele_cyc:     String2int(row_string(18, row)),
 			Boal_cyc:    String2int(row_string(19, row)),
 		}
-		db.Create(&keyword)
+
+		var existingKeyword model.Keyword
+		result := db.First(&existingKeyword, "record_id=?", keyword.RecordId)
+		if errors.Is(result.Error, gorm.ErrRecordNotFound) {
+			db.Create(&keyword)
+		}
 	}
 }

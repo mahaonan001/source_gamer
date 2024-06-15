@@ -28,7 +28,7 @@ SELECT
     s.extracted_texts,
     s.option_word,
     s.score_
-FROM records r
-JOIN keywords k ON r.id = k.record_id
-JOIN scores s ON r.id = s.record_id
-JOIN dims d ON d.id = s.dim_id;
+FROM records_t r
+JOIN keywords_t k ON r.id = k.record_id
+JOIN scores_t s ON r.id = s.record_id
+JOIN dims_t d ON d.id = s.dim_id;
