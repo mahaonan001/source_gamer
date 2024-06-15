@@ -6,6 +6,7 @@ import (
 	"source_gamer/common"
 	"source_gamer/router"
 	"source_gamer/utils"
+	"time"
 
 	"github.com/gin-contrib/cors"
 	"github.com/gin-gonic/gin"
@@ -13,10 +14,14 @@ import (
 )
 
 func main() {
-	// common.GetDB_Commens()
-	gin.SetMode(gin.ReleaseMode)
+	// gin.SetMode(gin.ReleaseMode)
 	r := gin.Default()
-
+	tick := time.NewTicker(time.Duration(viper.GetInt("TimeCyc")) * time.Second)
+	go func() {
+		for range tick.C {
+			utils.Timely()
+		}
+	}()
 	r.Use(cors.New(cors.Config{
 		// 允许的域名或IP地址
 		AllowOrigins: []string{"*"},
@@ -56,11 +61,7 @@ func init() {
 		}
 		db.Exec(string(sqlLocatuon))
 		db.Exec(string(sqlShow))
-		utils.Record(viper.GetString("WorkDir.record"))
-
-		utils.Analysis_record(viper.GetString("WorkDir.score"))
-
-		utils.Keyword(viper.GetString("WorkDir.keyword"))
+		utils.Timely()
 	}
 
 }

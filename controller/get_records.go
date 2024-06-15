@@ -9,20 +9,20 @@ import (
 )
 
 type Show struct {
-	ID               string
-	Cleaned_comments string
-	Option_word      string
-	Score_           bool
-	T_room           float64
-	S_room           int
-	BurnningT        string
-	Device_logo      string
-	Hot_T            string
-	Time_cyc         string
-	Money_cyc        float64
-	Gas_cyc          float64
-	Ele_cyc          int
-	Boal_cyc         int
+	ID               string  `gorm:"column:record_id"`
+	Cleaned_comments string  `gorm:"column:cleaned_comments"`
+	Option_word      string  `gorm:"column:option_word"`
+	Score_           bool    `gorm:"column:score_"`
+	T_room           float64 `gorm:"column:t_room"`
+	S_room           int     `gorm:"column:s_room"`
+	BurnningT        string  `gorm:"column:burnning_t"`
+	Device_logo      string  `gorm:"column:device_logo"`
+	Hot_T            string  `gorm:"column:hot__t"`
+	Time_cyc         string  `gorm:"column:time_cyc"`
+	Money_cyc        float64 `gorm:"column:money_cyc"`
+	Gas_cyc          float64 `gorm:"column:gas_cyc"`
+	Ele_cyc          int     `gorm:"column:ele_cyc"`
+	Boal_cyc         int     `gorm:"column:boal_cyc"`
 }
 
 func (s Show) TableName() string {
