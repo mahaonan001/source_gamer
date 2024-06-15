@@ -15,7 +15,7 @@ func CollectRouter(r *gin.Engine) *gin.Engine {
 		{
 			player.POST("/register", controller.Register)
 			player.POST("/login", controller.Login)
-			player.POST("/info", middle.AuthMiddleware(), controller.Info)
+			player.GET("/info", middle.AuthMiddleware(), controller.Info)
 			player.POST("/cg_info", middle.AuthMiddleware(), controller.Cgif)
 			// player.POST("/upload")
 			player.POST("/g_record", middle.AuthMiddleware(), controller.Get_records)
@@ -23,7 +23,7 @@ func CollectRouter(r *gin.Engine) *gin.Engine {
 			chat := player.Group("/chat")
 			{
 				chat.POST("/", middle.AuthMiddleware(), controller.Chats)
-				chat.POST("/records", middle.AuthMiddleware(), controller.ChatsRecord)
+				chat.GET("/records", middle.AuthMiddleware(), controller.ChatsRecord)
 			}
 
 		}
