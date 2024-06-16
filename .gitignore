@@ -1,5 +1,4 @@
 go.mod
 go.sum
 config/config.yml
-utils/a.xlsx
 .gitignore
