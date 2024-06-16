@@ -15,6 +15,7 @@ import (
 	"gorm.io/gorm"
 )
 
+// Register 用户注册函数
 func Register(c *gin.Context) {
 	//获取参数
 	db_User, _ := common.GetDB()
@@ -63,6 +64,8 @@ func Register(c *gin.Context) {
 		}
 	}
 }
+
+// isEmailExited_User 检查邮箱是否存在对应的用户
 func isEmailExited_User(db *gorm.DB, Email string) model.User {
 	var User model.User
 	db.Where("Email = ?", Email).Order("id asc").Limit(1).Find(&User)

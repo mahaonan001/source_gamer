@@ -12,11 +12,12 @@ import (
 	"gorm.io/gorm"
 )
 
+// Login 是处理用户登录请求的函数
 func Login(c *gin.Context) {
-	//获取参数
+	// 获取参数
 	Email := c.PostForm("email")
 	PassWord := c.PostForm("password")
-	//数据验证
+	// 数据验证
 	if len(PassWord) < 6 {
 		response.Response(c, http.StatusOK, 400, nil, "密码不能低于6位数")
 		return
@@ -34,7 +35,7 @@ func Login(c *gin.Context) {
 		response.FalseRe(c, "密码错误次数过多，账号已冻结", nil)
 		return
 	}
-	//验证密码
+	// 验证密码
 	if err := bcrypt.CompareHashAndPassword([]byte(User.PassWord), []byte(PassWord)); err != nil {
 		response.FalseRe(c, "密码错误", nil)
 		User.ErrorTimes++
@@ -53,6 +54,8 @@ func Login(c *gin.Context) {
 	User.ErrorTimes = 0
 	db.Save(&User)
 }
+
+// isEmailExited 检查邮箱是否存在
 func isEmailExited(db *gorm.DB, Email string) model.User {
 	var User model.User
 	db.Where("Email = ?", Email).Find(&User)

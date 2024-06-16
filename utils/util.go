@@ -2,7 +2,6 @@ package utils
 
 import (
 	"errors"
-	"fmt"
 	"log"
 	"math/rand"
 	"regexp"
@@ -14,6 +13,7 @@ import (
 	"gorm.io/gorm"
 )
 
+// RandomString 生成随机字符串，用于对chat产生的记录向records_t表种写入提供单独的id
 func RandomString(l int, Inner string) string {
 	var letters = []byte(Inner)
 	var result = make([]byte, l)
@@ -23,12 +23,16 @@ func RandomString(l int, Inner string) string {
 	}
 	return string(result)
 }
+
+// row_string 将excel表中的某一格读为字符串返回
 func row_string(k int, row []string) string {
 	if len(row) < k+1 {
 		return ""
 	}
 	return row[k]
 }
+
+// String2int 将字符串类型的数字转为int类型
 func String2int(str string) int {
 	n, err := strconv.Atoi(str)
 	if err != nil {
@@ -36,6 +40,8 @@ func String2int(str string) int {
 	}
 	return n
 }
+
+// String2Double 将字符串类型的数字转为double类型
 func String2Double(str string) float64 {
 	f, err := strconv.ParseFloat(str, 64)
 	if err != nil {
@@ -43,9 +49,11 @@ func String2Double(str string) float64 {
 	}
 	return f
 }
-func Record(path string, db *gorm.DB) {
-	f, err := excelize.OpenFile(path)
 
+// Record 将excel表中的记录写入数据库
+func Record(path string, db *gorm.DB) {
+	//读取excel表中的记录
+	f, err := excelize.OpenFile(path)
 	if err != nil {
 		log.Println(err)
 		return
@@ -54,6 +62,7 @@ func Record(path string, db *gorm.DB) {
 	if err != nil {
 		return
 	}
+	//舍弃标题行，循环写入数据库
 	for _, row := range rows[1:] {
 		pg_n, err := strconv.ParseInt(row[3], 10, 64)
 		if err != nil {
@@ -85,7 +94,9 @@ func Record(path string, db *gorm.DB) {
 			Cleaned_comments: row[11],
 		}
 		var existingRecord model.Record
+		// 检查记录是否已存在
 		result := db.First(&existingRecord, "id = ?", commen.ID)
+		// 如果记录不存在，则创建新记录
 		if errors.Is(result.Error, gorm.ErrRecordNotFound) {
 			db.Create(&commen)
 		}
@@ -93,31 +104,34 @@ func Record(path string, db *gorm.DB) {
 	}
 }
 
+// Analysis_record 函数用于分析记录
 func Analysis_record(path string, db *gorm.DB) {
+	// 使用excelize打开文件
 	f, err := excelize.OpenFile(path)
 	if err != nil {
 		log.Println(err)
 		return
 	}
+	// 读取excel表中的记录
 	rows, err := f.GetRows("Sheet1")
 	if err != nil {
 		return
 	}
-
+	// 遍历除第一行外的所有行
 	for _, row := range rows[1:] {
-
+		// 如果行中的列数小于18，则跳过此行
 		if len(row) < 18 {
 			continue
 		}
+		// 创建一个Dim对象
 		var dim model.Dim
 		result := db.Where("dim_=?", row[15]).Find(&dim)
-		if result.Error != nil {
-			fmt.Println("Error occurred during querying:", result.Error)
-		} else if result.RowsAffected == 0 {
+		// 在数据库中查询Dim_的值
+		if errors.Is(result.Error, gorm.ErrRecordNotFound) {
 			dim.Dim_ = row[15]
 			db.Create(&dim)
 		}
-
+		// 创建一个Score对象
 		score := model.Score{
 			RecordId:        row[1],
 			Analysis:        row[13],
@@ -127,19 +141,25 @@ func Analysis_record(path string, db *gorm.DB) {
 			Score_:          row[17] == "正向",
 		}
 		var existingScore model.Score
+		// 检查记录是否已存在
 		results := db.First(&existingScore, "record_id=?", score.RecordId)
+		// 如果记录不存在，则创建新记录
 		if errors.Is(results.Error, gorm.ErrRecordNotFound) {
 			db.Create(&score)
 		}
 	}
 }
 
+// Keyword 函数用于将关键词写入数据库
 func Keyword(path string, db *gorm.DB) {
+	// 读取excel表中的记录
 	f, err := excelize.OpenFile(path)
 	if err != nil {
 		log.Println(err)
 		return
 	}
+
+	// 读取excel表中的记录
 	rows, err := f.GetRows("Sheet1")
 	if err != nil {
 		return
@@ -161,6 +181,7 @@ func Keyword(path string, db *gorm.DB) {
 		}
 
 		var existingKeyword model.Keyword
+		// 检查记录是否已存在
 		result := db.First(&existingKeyword, "record_id=?", keyword.RecordId)
 		if errors.Is(result.Error, gorm.ErrRecordNotFound) {
 			db.Create(&keyword)

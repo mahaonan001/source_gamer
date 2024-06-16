@@ -5,6 +5,7 @@ import (
 	"gorm.io/gorm"
 )
 
+// 三个自动执行的函数
 func Timely(db *gorm.DB) {
 	Record(viper.GetString("WorkDir.record"), db)
 
