@@ -41,6 +41,7 @@ func Chats(c *gin.Context) {
 		RecordId: randId,
 	}
 	db.Create(&chat)
+	response.SuccessRe(c, "聊天记录", gin.H{"id": randId})
 }
 
 func ChatsRecord(c *gin.Context) {
@@ -53,12 +54,17 @@ func ChatsRecord(c *gin.Context) {
 		response.FalseRe(c, "数据库连接失败", nil)
 	}
 	var chats []model.Chat
-	db.Where("email_=?", User.(model.User).Email).Find(&chats)
+	db.Where("email_id=?", User.(model.User).Email).Find(&chats)
+	//for _, chat := range chats {
+	//	log.Println(chat.RecordId)
+	//}
 	var records []string
 	for _, chat := range chats {
+		log.Println(chat.User.ID)
 		var record model.Record
-		db.Where("id=? and chat=?", chat.User.ID, 1).Find(&record)
+		db.Where("id=? and chat=?", chat.RecordId, true).Find(&record)
 		records = append(records, record.Cleaned_comments)
+
 	}
 	response.SuccessRe(c, "历史记录", gin.H{"历史": records})
 }
