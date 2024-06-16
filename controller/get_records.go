@@ -15,6 +15,7 @@ type Show struct {
 	Score_           bool    `gorm:"column:score_"`
 	T_room           float64 `gorm:"column:t_room"`
 	S_room           int     `gorm:"column:s_room"`
+	HotDevice        string  `gorm:"column:hotdevice"`
 	BurnningT        string  `gorm:"column:burnning_t"`
 	Device_logo      string  `gorm:"column:device_logo"`
 	Hot_T            string  `gorm:"column:hot__t"`
