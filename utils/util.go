@@ -2,6 +2,7 @@ package utils
 
 import (
 	"errors"
+	"fmt"
 	"log"
 	"math/rand"
 	"regexp"
@@ -106,32 +107,30 @@ func Record(path string, db *gorm.DB) {
 
 // Analysis_record 函数用于分析记录
 func Analysis_record(path string, db *gorm.DB) {
-	// 使用excelize打开文件
 	f, err := excelize.OpenFile(path)
 	if err != nil {
 		log.Println(err)
 		return
 	}
-	// 读取excel表中的记录
 	rows, err := f.GetRows("Sheet1")
 	if err != nil {
 		return
 	}
-	// 遍历除第一行外的所有行
+
 	for _, row := range rows[1:] {
-		// 如果行中的列数小于18，则跳过此行
+
 		if len(row) < 18 {
 			continue
 		}
-		// 创建一个Dim对象
 		var dim model.Dim
 		result := db.Where("dim_=?", row[15]).Find(&dim)
-		// 在数据库中查询Dim_的值
-		if errors.Is(result.Error, gorm.ErrRecordNotFound) {
+		if result.Error != nil {
+			fmt.Println("Error occurred during querying:", result.Error)
+		} else if result.RowsAffected == 0 {
 			dim.Dim_ = row[15]
 			db.Create(&dim)
 		}
-		// 创建一个Score对象
+
 		score := model.Score{
 			RecordId:        row[1],
 			Analysis:        row[13],
@@ -141,9 +140,7 @@ func Analysis_record(path string, db *gorm.DB) {
 			Score_:          row[17] == "正向",
 		}
 		var existingScore model.Score
-		// 检查记录是否已存在
 		results := db.First(&existingScore, "record_id=?", score.RecordId)
-		// 如果记录不存在，则创建新记录
 		if errors.Is(results.Error, gorm.ErrRecordNotFound) {
 			db.Create(&score)
 		}
