@@ -150,13 +150,14 @@ func Keyword(path string, db *gorm.DB) {
 			T_room:      String2Double(row[10]),
 			S_room:      String2int(row_string(11, row)),
 			BurnningT:   row_string(12, row),
-			Device_logo: row_string(13, row),
-			Hot_T:       row_string(14, row),
-			Time_cyc:    row_string(15, row),
-			Money_cyc:   String2Double(row_string(16, row)),
-			Gas_cyc:     String2Double(row_string(17, row)),
-			Ele_cyc:     String2int(row_string(18, row)),
-			Boal_cyc:    String2int(row_string(19, row)),
+			HotDevice:   row_string(13, row),
+			Device_logo: row_string(14, row),
+			Hot_T:       row_string(15, row),
+			Time_cyc:    row_string(16, row),
+			Money_cyc:   String2Double(row_string(17, row)),
+			Gas_cyc:     String2Double(row_string(18, row)),
+			Ele_cyc:     String2int(row_string(19, row)),
+			Boal_cyc:    String2int(row_string(20, row)),
 		}
 
 		var existingKeyword model.Keyword

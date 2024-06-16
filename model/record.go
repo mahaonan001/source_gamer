@@ -41,6 +41,7 @@ type Keyword struct {
 	T_room      float64 `gorm:"type:double;"`
 	S_room      int     `gorm:"type:int"`
 	BurnningT   string  `gorm:"type:varchar(20)"`
+	HotDevice   string  `gorm:"type:varchar(20)"`
 	Device_logo string  `gorm:"type:varchar(20)"`
 	Hot_T       string  `gorm:"type:varchar(20)"`
 	Time_cyc    string  `gorm:"type:varchar(20)"`
