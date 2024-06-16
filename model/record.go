@@ -1,8 +1,9 @@
 package model
 
 type Record struct {
-	V_type           string `gorm:"type:varchar(10);"`
 	ID               string `gorm:"type:varchar(10);primaryKey;not null"`
+	Chat             bool   `gorm:"type:bool;not null"`
+	V_type           string `gorm:"type:varchar(10);"`
 	V_link           string `gorm:"type:varchar(100);"`
 	Page_n           int64  `gorm:"type:bigint;"`
 	User_name        string `gorm:"type:varchar(20)"`

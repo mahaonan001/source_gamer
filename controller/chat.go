@@ -31,6 +31,7 @@ func Chats(c *gin.Context) {
 
 	record := model.Record{
 		ID:               randId,
+		Chat:             true,
 		Cleaned_comments: comment,
 	}
 	db.Create(&record)
@@ -56,7 +57,7 @@ func ChatsRecord(c *gin.Context) {
 	var records []string
 	for _, chat := range chats {
 		var record model.Record
-		db.Where("id=?", chat.User.ID).Find(&record)
+		db.Where("id=? and chat=?", chat.User.ID, 1).Find(&record)
 		records = append(records, record.Cleaned_comments)
 	}
 	response.SuccessRe(c, "历史记录", gin.H{"历史": records})

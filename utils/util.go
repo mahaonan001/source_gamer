@@ -71,6 +71,7 @@ func Record(path string, db *gorm.DB) {
 		}
 		commen := model.Record{
 			V_type:           row[0],
+			Chat:             false,
 			ID:               row[1],
 			V_link:           row[2],
 			Page_n:           pg_n,

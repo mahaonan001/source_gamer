@@ -1,16 +1,8 @@
 CREATE VIEW shows AS
 SELECT 
     r.id as record_id,
-    r.v_type,
-    r.v_link,
-    r.page_n,
-    r.user_name,
-    r.user_id,
-    r.user_home,
-    r.time,
     r.ip,
-    r.like_n,
-    r.like_l,
+    r.chat,
     r.cleaned_comments,
     d.id AS dim_id,
     d.dim_ ,

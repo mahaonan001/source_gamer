@@ -36,7 +36,7 @@ func Get_records(c *gin.Context) {
 	if err != nil {
 		response.FalseRe(c, "页数错误", nil)
 	}
-	db.Offset(begin).Limit(10).Find(&records)
+	db.Offset(begin).Limit(10).Find(&records, "chat=?", 0)
 	if db.Error != nil {
 		response.FalseRe(c, "数据库出错", nil)
 	}
