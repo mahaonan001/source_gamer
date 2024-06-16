@@ -55,12 +55,9 @@ func ChatsRecord(c *gin.Context) {
 	}
 	var chats []model.Chat
 	db.Where("email_id=?", User.(model.User).Email).Find(&chats)
-	//for _, chat := range chats {
-	//	log.Println(chat.RecordId)
-	//}
+
 	var records []string
 	for _, chat := range chats {
-		log.Println(chat.User.ID)
 		var record model.Record
 		db.Where("id=? and chat=?", chat.RecordId, true).Find(&record)
 		records = append(records, record.Cleaned_comments)
