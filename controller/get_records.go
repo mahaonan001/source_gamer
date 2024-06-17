@@ -1,6 +1,7 @@
 package controller
 
 import (
+	"fmt"
 	"source_gamer/common"
 	"source_gamer/response"
 	"strconv"
@@ -42,4 +43,18 @@ func Get_records(c *gin.Context) {
 		response.FalseRe(c, "数据库出错", nil)
 	}
 	response.SuccessRe(c, "", gin.H{"data": records})
+}
+func SearchRecord(c *gin.Context) {
+	comment := c.PostForm("comment")
+	db, err := common.GetDB()
+	if err != nil {
+		return
+	}
+	var shows []Show
+	comment_ := fmt.Sprintf("%%%s%%", comment)
+	result := db.Where("cleaned_comments like ?", comment_).Find(&shows)
+	if result.Error != nil {
+		response.FalseRe(c, "some err happend", gin.H{"err": result.Error})
+	}
+	response.SuccessRe(c, "success", gin.H{"data": shows})
 }
