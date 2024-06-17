@@ -74,3 +74,12 @@ type Chat struct {
 func (c *Chat) TableName() string {
 	return "chats_t"
 }
+
+type Location struct {
+	Ip  string  `gorm:"type:varchar(50);not null;primaryKey"`
+	Pos float32 `gorm:"type:double;not null"`
+	Neg float32 `gorm:"type:double;not null"`
+	Num int     `gorm:"type:int;not null"`
+}
+
+func (l *Location) TableName() string { return "locations_t" }
