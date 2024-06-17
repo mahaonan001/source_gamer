@@ -11,6 +11,7 @@ import (
 
 type Show struct {
 	ID               string  `gorm:"column:record_id"`
+	Chat             int     `gorm:"column:chat;"`
 	Cleaned_comments string  `gorm:"column:cleaned_comments"`
 	Option_word      string  `gorm:"column:option_word"`
 	Score_           bool    `gorm:"column:score_"`
